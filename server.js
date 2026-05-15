@@ -12,7 +12,7 @@ mongoose.connect("mongodb+srv://yadavraju76878_db_user:raju6367@cluster0.8mc0wnx
 .then(() => console.log("MongoDB Atlas Connected"))
 .catch((err) => console.log(err));
 
-const User = require("./models/User");
+const User = require("./models/user");
 
 
 // HOME ROUTE
