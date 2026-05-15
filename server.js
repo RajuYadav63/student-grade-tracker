@@ -15,6 +15,12 @@ mongoose.connect("mongodb+srv://yadavraju76878_db_user:raju6367@cluster0.8mc0wnx
 const User = require("./models/User");
 
 
+// HOME ROUTE
+app.get("/", (req, res) => {
+    res.send("Student Grade Tracker API Running");
+});
+
+
 // CREATE
 app.post("/add", async (req, res) => {
 
@@ -59,6 +65,8 @@ app.put("/update/:id", async (req, res) => {
 });
 
 
-app.listen(5000, () => {
-    console.log("Server Running");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server Running on ${PORT}`);
 });
