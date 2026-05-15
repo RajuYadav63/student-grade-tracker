@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://student-grade-tracker-aw8o.onrender.com";
 
 
 // READ
