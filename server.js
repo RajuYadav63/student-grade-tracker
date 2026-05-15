@@ -1,72 +1,75 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
-
-mongoose.connect("mongodb+srv://yadavraju76878_db_user:raju6367@cluster0.8mc0wnx.mongodb.net/studentDB?appName=Cluster0&retryWrites=true&w=majority")
-.then(() => console.log("MongoDB Atlas Connected"))
-.catch((err) => console.log(err));
-
-const User = require("./models/user");
-
-
-// HOME ROUTE
-app.get("/", (req, res) => {
-    res.send("Student Grade Tracker API Running");
-});
-
-
-// CREATE
-app.post("/add", async (req, res) => {
-
-    const user = new User(req.body);
-
-    await user.save();
-
-    res.json(user);
-});
+const API = "https://student-grade-tracker-aw8o.onrender.com";
 
 
 // READ
-app.get("/users", async (req, res) => {
+async function getUsers() {
 
-    const users = await User.find();
+    const res = await fetch(`${API}/users`);
 
-    res.json(users);
-});
+    const users = await res.json();
+
+    let output = "";
+
+    users.forEach((user) => {
+
+        output += `
+        
+        <div class="user">
+
+            <h3>${user.name}</h3>
+
+            <p>${user.email}</p>
+
+            <button onclick="deleteUser('${user._id}')">
+                Delete
+            </button>
+
+        </div>
+        `;
+    });
+
+    document.getElementById("userList").innerHTML = output;
+}
+
+
+
+// CREATE
+async function addUser() {
+
+    const name = document.getElementById("name").value;
+
+    const email = document.getElementById("email").value;
+
+    await fetch(`${API}/add`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            name,
+            email
+        })
+    });
+
+    getUsers();
+}
+
 
 
 // DELETE
-app.delete("/delete/:id", async (req, res) => {
+async function deleteUser(id) {
 
-    await User.findByIdAndDelete(req.params.id);
+    await fetch(`${API}/delete/${id}`, {
 
-    res.json({
-        message: "Deleted"
+        method: "DELETE"
+
     });
-});
+
+    getUsers();
+}
 
 
-// UPDATE
-app.put("/update/:id", async (req, res) => {
-
-    const updatedUser = await User.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-    );
-
-    res.json(updatedUser);
-});
-
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-    console.log(`Server Running on ${PORT}`);
-});
+getUsers();
